@@ -1,11 +1,14 @@
-import './App.css'
-import Header from 'Remote1/Header'
+import Button from 'remoteApp/Button'
 
 function App() {
   return (
-    <>
-      <Header />
-    </>
+    <div>
+      <div></div>
+      <h1>HOST</h1>
+      <div className="card">
+        <Button />
+      </div>
+    </div>
   )
 }
 
