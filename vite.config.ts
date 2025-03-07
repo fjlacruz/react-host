@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
 
   const remotes = {
     remoteApp: 'http://localhost:5001/assets/remoteEntry.js',
+    remoteApp2: 'http://localhost:5001/assets/remoteEntry.js',
 
   };
 
@@ -25,6 +26,11 @@ export default defineConfig(({ mode }) => {
       target: 'esnext',
       minify: false,
       cssCodeSplit: false,
+    },
+    resolve: {
+      alias: {
+        remoteApp: '/@remoteApp'
+      },
     },
     clearScreen: false,
     define: {
