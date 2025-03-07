@@ -1,7 +1,11 @@
-[
-  {
+{
+  "remotes": [
+    {
+      "name": "remote_app",
       "url": "http://localhost:5001/remoteEntry.js",
       "scope": "remote_app",
       "module": "./Button"
-  }
-]
+    }
+    
+  ]
+}
