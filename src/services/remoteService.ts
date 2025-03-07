@@ -1,3 +1,4 @@
+// src/services/remoteService.ts
 interface RemoteConfig {
     name: string;
     url: string;
@@ -9,7 +10,7 @@ const remotes: { remotes: RemoteConfig[] } = {
     remotes: [
         {
             name: 'remote_app',
-            url: 'http://localhost:5001/assets/remoteEntry.js',
+            url: 'http://localhost:5001/assets/remoteEntry.js', // Verifica la URL
             scope: 'remote_app',
             module: './Button',
         },

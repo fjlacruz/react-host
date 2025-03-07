@@ -1,53 +1,70 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
-import { getRemoteComponents } from './services/remoteService'
+import React, { useEffect, useState } from 'react'
 
-const appTitle = import.meta.env.VITE_APP_TITLE
+const appTitle = import.meta.env.VITE_VAR1
+
+console.info(appTitle)
+
+const remotes = [
+  {
+    name: 'remote_app',
+    url: 'http://localhost:5001/assets/remoteEntry.js',
+    scope: 'remote_app',
+    module: './Button',
+  },
+]
 
 function App() {
-  const [remoteComponents, setRemoteComponents] = useState<Record<
-    string,
+  const [RemoteComponent, setRemoteComponent] = useState<React.ComponentType<
     any
   > | null>(null)
-  const [loadedComponents, setLoadedComponents] = useState<Record<
-    string,
-    React.ComponentType<any>
-  > | null>(null)
 
   useEffect(() => {
-    getRemoteComponents().then((components) => {
-      setRemoteComponents(components)
-    })
-  }, [])
+    const loadRemote = async () => {
+      try {
+        const remote = remotes[0]
 
-  useEffect(() => {
-    if (remoteComponents) {
-      const loadComponents = async () => {
-        const loaded: Record<string, React.ComponentType<any>> = {}
-        for (const [name, remoteModule] of Object.entries(remoteComponents)) {
-          const remoteComponent = lazy(() =>
-            import(/* @vite-ignore */ remoteModule),
-          )
-          loaded[name] = remoteComponent
+        // Cargar el remoteEntry.js como un módulo
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = remote.url
+          script.type = 'module'
+          script.onload = () => {
+            console.log(`Remote ${remote.name} loaded`)
+            resolve()
+          }
+          script.onerror = () => {
+            console.error(`Failed to load remote ${remote.name}`)
+            reject()
+          }
+          document.head.appendChild(script)
+        })
+
+        // Verificar si el scope está definido
+        if (!window[remote.scope]) {
+          console.error(`Scope ${remote.scope} is not defined`)
+          return
         }
-        setLoadedComponents(loaded)
+
+        // Importar el componente dinámicamente
+        const module = await window[remote.scope].get(remote.module)
+        const factory = module()
+        const Component = factory.default
+
+        setRemoteComponent(() => Component)
+      } catch (error) {
+        console.error('Error loading remote component:', error)
       }
-      loadComponents()
     }
-  }, [remoteComponents])
+
+    loadRemote()
+  }, [])
 
   return (
     <div>
       <div></div>
       <h1>HOST</h1>
       <h1>{appTitle}</h1>
-      <div className="card">
-        {loadedComponents &&
-          Object.entries(loadedComponents).map(([name, Component]) => (
-            <Suspense key={name} fallback={<div>Loading {name}...</div>}>
-              <Component />
-            </Suspense>
-          ))}
-      </div>
+      <div className="card">{RemoteComponent && <RemoteComponent />}</div>
     </div>
   )
 }
