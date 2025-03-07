@@ -1,0 +1,1 @@
+declare function __federation_import(name: string): Promise<void>;
