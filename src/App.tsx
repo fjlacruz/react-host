@@ -18,32 +18,9 @@ const simulatedRemoteConfig = [
       ref: 'remoteApp2Button',
     },
   },
-  {
-    route: '/remote-button3',
-    module: {
-      importPath: () => import('remoteApp2/Button'),
-      ref: 'remoteApp3Button',
-    },
-  },
 ]
 
-// Recorrer el array y convertir importPath de cadena a función
-const updatedConfig = simulatedRemoteConfig.map((item) => {
-  const importPathString = item.module.importPath
-
-  // Usamos eval para evaluar el string y convertirlo en una función
-  const updatedImportPath = eval(importPathString)
-
-  return {
-    ...item,
-    module: {
-      ...item.module,
-      importPath: updatedImportPath,
-    },
-  }
-})
-
-console.log(updatedConfig)
+console.log(simulatedRemoteConfig)
 
 function App() {
   const [remoteRoutes, setRemoteRoutes] = useState([])
@@ -53,9 +30,10 @@ function App() {
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Mapeamos las rutas y creamos los componentes dinámicamente
-      const routesWithComponents = updatedConfig.map((routeConfig) => ({
+      const routesWithComponents = simulatedRemoteConfig.map((routeConfig) => ({
         ...routeConfig,
-        component: lazy(routeConfig.module.importPath), // Usamos la función de importación dinámica
+        component: lazy(eval(routeConfig.module.importPath)),
+        //component: lazy(() => import('remoteApp/Button')),
       }))
 
       setRemoteRoutes(routesWithComponents)
