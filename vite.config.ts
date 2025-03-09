@@ -1,23 +1,28 @@
-
+// vite.config.js
 import { defineConfig, loadEnv } from 'vite';
 import federation from '@originjs/vite-plugin-federation';
 import react from '@vitejs/plugin-react';
+import { simulatedRemoteConfig } from './src/remoteModules'; // Importa simulatedRemoteConfig
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
-  const remotes = {
-    remoteApp: 'http://localhost:5001/assets/remoteEntry.js',
-    remoteApp2: 'http://localhost:5001/assets/remoteEntry.js',
+  // Recorre simulatedRemoteConfig y extrae las URLs de remoteApp
+  const remotes = simulatedRemoteConfig.reduce((acc, config) => {
+    // Extrae el nombre del remoto de config.module.ref (ej: remoteAppButton -> remoteApp)
+    const remoteName = config.module.ref.replace('Button', '');
 
-  };
+    // Agrega el nombre del remoto y la URL al objeto remotes
+    acc[remoteName] = config.remoteApp;
+    return acc;
+  }, {});
 
   return {
     plugins: [
       react(),
       federation({
         name: 'app',
-        remotes: remotes,
+        remotes: remotes, // Usa el objeto remotes generado
         shared: ['react', 'react-dom'],
       }),
     ],
@@ -29,7 +34,7 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
-        remoteApp: '/@remoteApp'
+        remoteApp: '/@remoteApp',
       },
     },
     clearScreen: false,
@@ -38,5 +43,3 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
-
-
