@@ -1,11 +1,16 @@
-// remoteModules.ts
-import React, { lazy } from 'react';
-
-export const moduleMap = {
-    [import.meta.env.VITE_REMOTE_BUTTON_REF]: lazy(() =>
-        import(/* @vite-ignore */ import.meta.env.VITE_REMOTE_BUTTON_MODULE)
-    ),
-    [import.meta.env.VITE_REMOTE_BUTTON2_REF]: lazy(() =>
-        import(/* @vite-ignore */ import.meta.env.VITE_REMOTE_BUTTON2_MODULE)
-    ),
-};
+export const simulatedRemoteConfig = [
+    {
+        route: '/remote-button',
+        module: {
+            importPath: () => import('remoteApp/Button'),
+            ref: 'remoteAppButton',
+        },
+    },
+    {
+        route: '/remote-button2',
+        module: {
+            importPath: () => import('remoteApp2/Button'),
+            ref: 'remoteApp2Button',
+        },
+    },
+]

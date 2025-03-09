@@ -1,24 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { simulatedRemoteConfig } from './remoteModules'
 
 const appTitle = import.meta.env.VITE_VAR1
-
-const simulatedRemoteConfig = [
-  {
-    route: '/remote-button',
-    module: {
-      importPath: () => import('remoteApp/Button'),
-      ref: 'remoteAppButton',
-    },
-  },
-  {
-    route: '/remote-button2',
-    module: {
-      importPath: () => import('remoteApp2/Button'),
-      ref: 'remoteApp2Button',
-    },
-  },
-]
 
 console.log(simulatedRemoteConfig)
 
