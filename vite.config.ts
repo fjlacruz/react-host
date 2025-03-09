@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
       react(),
       federation({
         name: 'app',
-        remotes: remotes, // Usa el objeto remotes generado
+        remotes: remotes,
         shared: ['react', 'react-dom'],
       }),
     ],

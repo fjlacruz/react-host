@@ -1,10 +1,9 @@
+// File: src/App.tsx
 import React, { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { simulatedRemoteConfig } from './remoteModules'
 
 const appTitle = import.meta.env.VITE_VAR1
-
-console.log(simulatedRemoteConfig)
 
 function App() {
   const [remoteRoutes, setRemoteRoutes] = useState([])
@@ -13,11 +12,14 @@ function App() {
     const fetchConfig = async () => {
       await new Promise((resolve) => setTimeout(resolve, 500))
 
-      // Mapeamos las rutas y creamos los componentes dinámicamente
-      const routesWithComponents = simulatedRemoteConfig.map((routeConfig) => ({
+      // Filtra las rutas con status 1 y mapea las rutas y crea los componentes dinámicamente
+      const filteredRoutes = simulatedRemoteConfig.filter(
+        (routeConfig) => routeConfig.status === 1,
+      )
+
+      const routesWithComponents = filteredRoutes.map((routeConfig) => ({
         ...routeConfig,
         component: lazy(eval(routeConfig.module.importPath)),
-        //component: lazy(() => import('remoteApp/Button')),
       }))
 
       setRemoteRoutes(routesWithComponents)
